@@ -1,0 +1,146 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    --font-sans: var(--font-inter);
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    /* Updated to Urbai light theme with white background and vibrant purple primary */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 258 100% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 258 100% 65%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 258 100% 65%;
+    --chart-1: 258 100% 65%;
+    --chart-2: 220 70% 50%;
+    --chart-3: 160 60% 45%;
+    --chart-4: 30 80% 55%;
+    --chart-5: 280 65% 60%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 0%;
+    --sidebar-primary: 258 100% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 258 100% 65%;
+  }
+  .dark {
+    /* Removed dark theme since Urbai uses light theme only */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 258 100% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 258 100% 65%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 258 100% 65%;
+    --chart-1: 258 100% 65%;
+    --chart-2: 220 70% 50%;
+    --chart-3: 160 60% 45%;
+    --chart-4: 30 80% 55%;
+    --chart-5: 280 65% 60%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 0%;
+    --sidebar-primary: 258 100% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 258 100% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+/* Mapbox search components - ensure they appear above dialogs */
+mapbox-search-listbox,
+mapbox-search-listbox div[class*="--Results"],
+mapbox-search-listbox [class*="--Results"],
+mapbox-search-listbox [class*="--ResultsList"] {
+  z-index: 9999 !important;
+}
+
+/* Only show results when they have content and are not explicitly hidden by Mapbox */
+mapbox-search-listbox div[class*="--Results"]:not([aria-busy="true"]) {
+  z-index: 9999 !important;
+}
+
+/* Force visibility only when results list has actual suggestions */
+mapbox-search-listbox div[class*="--Results"]:has([class*="--Suggestion"]) {
+  visibility: visible !important;
+  display: block !important;
+}
+
+/* Ensure suggestions are clickable */
+mapbox-search-listbox [class*="--Suggestion"] {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* Allow clicks to pass through dialog overlay to Mapbox results */
+[data-radix-dialog-overlay] {
+  pointer-events: none !important;
+}
+
+/* Re-enable pointer events on dialog content and its children */
+[data-radix-dialog-content],
+[data-radix-dialog-content] * {
+  pointer-events: auto !important;
+}
+
+/* Ensure Mapbox elements are fully interactive */
+mapbox-search-listbox,
+mapbox-search-listbox * {
+  pointer-events: auto !important;
+}
+
+/* Ensure Mapbox suggestions list appears correctly */
+[data-radix-popper-content-wrapper] {
+  z-index: 9999 !important;
+}
+
+/* Allow overflow in dialog for autocomplete results */
+[role="dialog"] {
+  overflow: visible !important;
+}
