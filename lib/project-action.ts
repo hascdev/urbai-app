@@ -44,7 +44,8 @@ export const createProjectMessage = actionClient.inputSchema(z.object({
     citations: z.array(z.object({
         id: z.string(),
         article: z.string(),
-        quote: z.string()
+        quote: z.string(),
+        file_id: z.string()
     })).optional().nullable()
 }))
     .action(async ({ parsedInput: { id, project_id, message, role, citations } }) => {

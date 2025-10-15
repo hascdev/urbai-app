@@ -7,6 +7,8 @@ import { AppTopbar } from "@/components/app-topbar"
 import { useAuth } from "@/hooks/use-auth"
 import { Download, Calendar, AlertCircle, Star, Zap, Crown } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { createPreference } from "@/lib/mercadopago-action"
+import { toast } from "sonner"
 
 const plans = [
 	{
@@ -93,15 +95,16 @@ export default function BillingPage() {
 	const { user } = useAuth();
 	const router = useRouter();
 
-	const handleUpgrade = (planId: string) => {
-		if (planId === "custom") {
-			// Open contact form or redirect to contact
-			alert("Nos pondremos en contacto contigo para configurar tu plan Custom")
-			return
+	const handleUpgrade = async (planId: string) => {
+		console.log("handleUpgrade", planId);
+		if (!user?.subscription?.id) {
+			toast.info("No tienes una suscripción activa");
+			return;
 		}
-
-		//upgradePlan(planId)
-		alert(`Plan actualizado a ${plans.find((p) => p.id === planId)?.name} exitosamente`)
+		await createPreference({
+			new_plan_id: planId,
+			subscription_id: user?.subscription?.id
+		})
 	}
 
 	const handleDownloadInvoice = (invoiceId: string) => {
@@ -253,7 +256,7 @@ export default function BillingPage() {
 					<div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
 						{
 							plans.map((plan) => {
-								const isCurrent = plan.id === (user?.subscription?.plan?.id || "starter")
+								const isCurrent = plan.id === user?.subscription?.plan_id;
 								return (
 									<Card
 										key={plan.id}
@@ -319,13 +322,7 @@ export default function BillingPage() {
 
 										<CardFooter>
 											{
-												plan.id === "starter" ? (
-													<Button
-														disabled={isCurrent}
-														className="w-full bg-gray-100 text-gray-700">
-														Comienza gratis
-													</Button>
-												) : plan.id === "educacional" ? (
+												plan.id === "educacional" ? (
 													<Button
 														onClick={() => router.push("mailto:hola@urbai.cl?subject=Consulta Plan Educacional")}
 														className="w-full bg-primary hover:bg-primary/90 text-white"
@@ -348,7 +345,7 @@ export default function BillingPage() {
 															: "bg-gray-100 hover:bg-gray-200 text-gray-700"
 															}`}
 													>
-														{isCurrent ? "Plan actual" : "Comprar"}
+														{isCurrent ? "Plan actual" :  plan.id === "7fdfdef2-6352-474f-88f3-952c12df10f0" ? "Comienza gratis" : "Comprar"}
 													</Button>
 												)
 											}

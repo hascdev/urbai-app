@@ -5,6 +5,7 @@ import { actionClient } from "./safe-action";
 import { feedbackSchema, subscriptionSchema, userSchema } from "./user-schema";
 import { revalidatePath } from "next/cache";
 import { User } from "./definitions";
+import { z } from "zod";
 
 export const createUser = actionClient.inputSchema(userSchema)
     .action(async ({ parsedInput: { uid, name, phone } }) => {
@@ -24,7 +25,43 @@ export const createUser = actionClient.inputSchema(userSchema)
 
         return { user: data as unknown as User };
     }
-    );
+);
+
+export const createUserFirstTime = actionClient.inputSchema(z.object({
+    uid: z.string(),
+    name: z.string(),
+    phone: z.string()
+})).action(async ({ parsedInput: { uid, name, phone } }) => {
+
+        console.log("createUserFirstTime", uid, name, phone);
+        const supabase = await createClient();
+        const { error, data } = await supabase.from('users').select('*').eq('uid', uid).maybeSingle();
+
+        if (error) {
+            console.error("createUserFirstTime - error", error);
+            return { failure: error.message, newUser: null };
+        }
+
+        if (data) {
+            console.log("createUserFirstTime - usuario existente encontrado:", data);
+            return { newUser: data as unknown as User, failure: null };
+        }
+
+        const { error: createError, data: createData } = await supabase.from('users').insert({
+            uid: uid,
+            name: name,
+            phone: phone
+        }).select().single();
+
+        if (createError) {
+            console.error("createUserFirstTime - createError", createError);
+            return { failure: createError.message, newUser: null };
+        }
+
+        console.log("createUserFirstTime - usuario creado:", createData);
+        return { newUser: createData as unknown as User, failure: null };
+    }
+);
 
 export const updateUser = actionClient.inputSchema(userSchema)
     .action(async ({ parsedInput: { uid, name, phone, active } }) => {

@@ -8,11 +8,11 @@ import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import { sendFeedback } from "@/lib/user-action";
 import { Loader2 } from "lucide-react";
-import { useUser } from '../../stimar-webapp/hooks/use-user';
+import { useAuth } from "@/hooks/use-auth";
 
 export function FeedbackPopover() {
 
-    const { user } = useUser();
+    const { user } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [isPending, setIsPending] = useState(false);
     const [comment, setComment] = useState("");
@@ -25,7 +25,7 @@ export function FeedbackPopover() {
         
         setIsPending(true);
         await sendFeedback({
-            user_id: user?.id as string,
+            user_id: user?.uid as string,
             comment: comment
         });
         setComment("");

@@ -74,6 +74,7 @@ export function MessageWithCitations({ content, citations, projectLibraries }: M
     }
 
     async function handleClickCitation(citation: MessageCitation) {
+        console.log("handleClickCitation", projectLibraries, citation);
         const library = projectLibraries.find(pl => pl.library.documents.find(d => d.storage_file_id === citation.file_id))?.library;
         if (!library) return;
         const doc = library.documents.find(d => d.storage_file_id === citation.file_id)
@@ -81,7 +82,7 @@ export function MessageWithCitations({ content, citations, projectLibraries }: M
         doc.library = library;
         console.log("doc", doc);
         setDoc(doc);
-        setSearchText(citation.quote.substring(0, 65));
+        setSearchText(citation.quote.substring(0, 50));
         setOpenPDFViewerDialog(true);
     }
 

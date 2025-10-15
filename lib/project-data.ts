@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import { Library, Project, ProjectLibrary, ProjectMessage, ProjectNote } from "@/lib/definitions";
+import { Project, ProjectLibrary, ProjectMessage, ProjectNote } from "@/lib/definitions";
 
 
 export async function fetchProject(id: string) {
@@ -166,7 +166,7 @@ export async function fetchProjectLibraries(project_id: string) {
         const supabase = await createClient();
         const { data, error } = await supabase
             .from('project_library')
-            .select('*, library:library(id, name, status:library_status(name), type:library_types(name, level_id, level:library_levels(name)), location:library_locations(name), documents:library_docs(*))')
+            .select('*, library:library(id, name, status:library_status(name), type:library_types(name, level_id, level:library_levels(name)), location:library_locations(name), documents:library_docs(*), vector_store_id)')
             .eq('project_id', project_id);
 
         if (error) {

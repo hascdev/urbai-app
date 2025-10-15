@@ -2,13 +2,14 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 import { createClient } from "@/utils/supabase/client"
-import { AuthState, User } from "@/lib/definitions"
+import { AuthState, Subscription, User } from "@/lib/definitions"
 import { fetchUser } from "@/lib/user-data"
 
 interface AuthContextType extends AuthState {
 	login: (user: User) => void
 	logout: () => void
 	updateUser: (updates: Partial<User>) => void
+	updateUserSubscription: (subscription: Subscription) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -46,6 +47,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		setAuthState({ user: null, isAuthenticated: false, isLoading: false, });
 	}
 
+	const updateUserSubscription = (subscription: Subscription) => {
+		if (authState.user) {
+			const updatedUser = { ...authState.user, subscription }
+			setAuthState((prev) => ({ ...prev, user: updatedUser }))
+		}
+	}
+
 	const updateUser = (updates: Partial<User>) => {
 		if (authState.user) {
 			const updatedUser = { ...authState.user, ...updates }
@@ -64,6 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				login,
 				logout,
 				updateUser,
+				updateUserSubscription,
 			}}
 		>
 			{children}

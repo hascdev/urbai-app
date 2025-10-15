@@ -18,6 +18,7 @@ import { useProjectStore } from "@/stores/project-store"
 import { useLibraryStore } from "@/stores/library-store"
 import { useAuth } from "@/hooks/use-auth"
 import { toast } from "sonner"
+import { fetchCurrentSubscription } from "@/lib/user-data"
 
 interface ChatPanelProps {
     isMobile?: boolean
@@ -26,7 +27,7 @@ interface ChatPanelProps {
 
 export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
 
-    const { user } = useAuth();
+    const { user, updateUserSubscription } = useAuth();
     const { messages, fetchMessages, addMessage } = useMessageStore();
     const { projectLibraries, getProjectLibraries } = useLibraryStore();
     const { activeLibraries } = useProjectStore();
@@ -36,6 +37,7 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
     const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false)
     const [isAddressSelected, setIsAddressSelected] = useState(false)
     const [addressData, setAddressData] = useState<any>(null);
+    const [refreshSubscription, setRefreshSubscription] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -54,6 +56,19 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
         }
         fetchInitialData();
     }, [project_id])
+
+    useEffect(() => {
+        const refreshCurrentSubscription = async () => {
+            const subscription = await fetchCurrentSubscription();
+            if (subscription) {
+                updateUserSubscription(subscription);
+            }
+        }
+        if (refreshSubscription) {
+            refreshCurrentSubscription();
+            setRefreshSubscription(false);
+        }
+    }, [refreshSubscription, updateUserSubscription])
 
     const removeCitations = (text: string) => {
         // Remove all citation markers like {{S1}}, {{S2}}, etc. and {{citations}}
@@ -115,7 +130,9 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
         setMessage("");
         setIsLoading(true);
 
-        const vs_ids = projectLibraries.map((pl) => pl.library.vector_store_id);
+        const projectLibrariesFiltered = projectLibraries.filter((pl) => activeLibraries.includes(pl.library.id));
+        const vs_ids = projectLibrariesFiltered.map((pl) => pl.library.vector_store_id);
+        console.log('vs_ids', vs_ids);
         const result = await getAnswer(message, project_id, vs_ids, user.subscription);
         if (!result.message) {
             console.error('Error getting answer:', result.error)
@@ -126,6 +143,7 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
         const { message: urbaiMessage } = result;
         addMessage(urbaiMessage);
         setIsLoading(false);
+        setRefreshSubscription(true);
     }
 
     const handleSaveNote = async (content: string) => {
@@ -160,7 +178,7 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
                             <span className="text-gray-900">{user?.subscription?.remaining} / {Number(user?.subscription?.plan.queries)}</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-1">
-                            <div className="bg-primary h-2 rounded-full" style={{ width: `${(Number(user?.subscription?.remaining) / Number(user?.subscription?.plan.queries)) * 100}%` }}></div>
+                            <div className="bg-primary h-1 rounded-full" style={{ width: `${(Number(user?.subscription?.remaining) / Number(user?.subscription?.plan.queries)) * 100}%` }}></div>
                         </div>
                     </div>
                 )}

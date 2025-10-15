@@ -8,11 +8,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import clsx from "clsx";
-import { useUser } from "../../stimar-webapp/hooks/use-user";
+import { useAuth } from "@/hooks/use-auth";
 
 export function NotificationPopover({ notifications }: { notifications: Notification[] }) {
 
-    const { user } = useUser();
+    const { user } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [hasNewNotification, setHasNewNotification] = useState(false);
     const [localNotifications, setLocalNotifications] = useState<Notification[]>(notifications);
@@ -23,7 +23,7 @@ export function NotificationPopover({ notifications }: { notifications: Notifica
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, payload => {
                 const notification = payload.new as Notification;
                 console.log(notification);
-                if (notification.receiver_id === user?.id as string) {
+                if (notification.receiver_id === user?.uid as string) {
                     notification.status = 'delivered';
                     setLocalNotifications([notification, ...localNotifications]);
                     setHasNewNotification(true);

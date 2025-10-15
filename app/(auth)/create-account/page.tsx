@@ -1,14 +1,56 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { signInWithGoogle } from "@/lib/login-action";
+import { ArrowRight, MessageSquare, BookOpen, BarChart3, ArrowLeft } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+
+const onboardingSteps = [
+    {
+        id: 1,
+        title: "Explora la Librería Normativa",
+        description: "Accede a documentos oficiales. Todo actualizado y verificado.",
+        icon: BookOpen,
+        tip: "Usa los filtros por comuna y tipo de documento para encontrar exactamente lo que necesitas.",
+    },
+    {
+        id: 2,
+        title: "Crea Proyectos y Chatea",
+        description: "Selecciona documentos relevantes y pregunta en lenguaje natural.",
+        icon: MessageSquare,
+        tip: "Puedes activar múltiples documentos para obtener respuestas más completas (requiere plan Pro).",
+    },
+    {
+        id: 3,
+        title: "Notas y Reportes",
+        description: "Crea notas y reportes profesionales a partir de tus conversaciones.",
+        icon: BarChart3,
+        tip: "Las notas son ilimitadas y los reportes en PDF están disponibles para usuarios Pro y Custom.",
+    },
+]
 
 export default function CreateAccount() {
 
     const { execute } = useAction(signInWithGoogle);
+    const [currentStep, setCurrentStep] = useState(0)
+
+    const handleNext = () => {
+        if (currentStep < onboardingSteps.length - 1) {
+            setCurrentStep(currentStep + 1)
+        }
+    }
+
+    const handlePrevious = () => {
+        if (currentStep > 0) {
+            setCurrentStep(currentStep - 1)
+        }
+    }
+
+    const step = onboardingSteps[currentStep]
 
     function handleGoogleLogin(formData: FormData) {
         execute();
@@ -19,25 +61,71 @@ export default function CreateAccount() {
             {/* Left side - Hero Slider */}
             <div className="hidden md:flex flex-1 bg-white flex-col justify-center items-center p-4 relative overflow-hidden">
                 <div className="flex flex-col items-center justify-center bg-urbai rounded-md w-full h-full">
-                    <div className="max-w-md text-center space-y-4 z-10">
-                        <div className="relative w-full h-full flex items-center justify-center">
-                            <div className="relative w-full max-w-sm">
-                                <video
-                                    className="w-full h-auto max-h-[80vh] object-contain"
-                                    autoPlay
-                                    muted
-                                    loop
-                                >
-                                    <source src="/assets/urbai.mp4" type="video/mp4" />
-                                    Your browser does not support the video tag.
-                                </video>
+                    <div className="w-full max-w-3xl">
+                        {/* Header */}
+                        <div className="text-center mb-8">
+                            <h1 className="text-3xl font-bold text-gray-900 mb-2">¡Bienvenido!</h1>
+                            <p className="text-gray-600">Te mostramos las funciones principales de Urbai en 3 pasos</p>
+                        </div>
+
+                        {/* Progress indicator */}
+                        <div className="flex justify-center mb-8">
+                            <div className="flex space-x-2">
+                                {onboardingSteps.map((_, index) => (
+                                    <div
+                                        key={index}
+                                        className={`h-2 w-8 rounded-full transition-colors ${index <= currentStep ? "bg-primary" : "bg-gray-200"
+                                            }`}
+                                    />
+                                ))}
                             </div>
                         </div>
-                    </div>
 
-                    {/* Decorative elements */}
-                    <div className="absolute top-10 right-10 w-20 h-20 bg-white/10 rounded-full"></div>
-                    <div className="absolute bottom-20 left-10 w-16 h-16 bg-white/10 rounded-full"></div>
+                        {/* Main content */}
+                        <Card className="bg-white border-gray-200 shadow-sm">
+                            <CardContent className="p-8">
+                                <div className="flex flex-col items-center justify-center text-center">
+                                    <div className="p-3 bg-primary/10 rounded-lg mb-4">
+                                        <step.icon className="h-8 w-8 text-primary" />
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <span className="text-sm text-gray-600">
+                                            Paso {step.id} de {onboardingSteps.length}
+                                        </span>
+                                        <h2 className="text-2xl font-bold text-gray-900">{step.title}</h2>
+                                    </div>
+
+                                    <p className="text-gray-600 text-lg mb-6 leading-relaxed max-w-2xl">{step.description}</p>
+
+                                    <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-6 max-w-2xl">
+                                        <p className="text-primary text-sm">
+                                            <strong>Tip:</strong> {step.tip}
+                                        </p>
+                                    </div>
+
+                                    {/* Navigation buttons */}
+                                    <div className="flex justify-between items-center w-full max-w-2xl">
+                                        <Button
+                                            variant="outline"
+                                            onClick={handlePrevious}
+                                            className={`border-gray-200 text-gray-900 hover:bg-gray-50 bg-white ${currentStep > 0 ? "visible" : "invisible"}`}
+                                        >
+                                            <ArrowLeft className="mr-2 h-4 w-4" />
+                                            Anterior
+                                        </Button>
+
+                                        <Button 
+                                            onClick={handleNext} 
+                                            className={`bg-primary hover:bg-primary/90 text-white ${currentStep === onboardingSteps.length - 1 ? "invisible" : "visible"}`}>
+                                            Siguiente
+                                            <ArrowRight className="ml-2 h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
             </div>
 

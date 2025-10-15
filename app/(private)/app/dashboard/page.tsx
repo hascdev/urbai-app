@@ -40,7 +40,7 @@ export default function DashboardPage() {
 		router.push(`/app/projects/${projectId}`)
 	}
 
-	if (isLoading) {
+	if (isLoading || !user) {
 		return (
 			<div className="h-screen bg-white flex flex-col overflow-hidden">
 				<AppTopbar />
@@ -63,7 +63,7 @@ export default function DashboardPage() {
 				<div className="flex items-center justify-between mb-8">
 					<div>
 						<h1 className="text-3xl font-bold text-gray-900 mb-2">Hola 👋</h1>
-						<p className="text-gray-600">Bienvenido de vuelta, {user?.name}. Continúa donde lo dejaste.</p>
+						<p className="text-gray-600">Bienvenido de vuelta, {user?.name}.</p>
 					</div>
 					<div className="flex space-x-3">
 						<Button

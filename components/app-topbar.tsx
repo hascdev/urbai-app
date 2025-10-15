@@ -137,8 +137,8 @@ export function AppTopbar() {
 					{/* User Menu */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" className="relative h-8 w-8 rounded-full">
-								<Avatar className="h-8 w-8">
+							<Button variant="ghost" className="relative size-10 rounded-full">
+								<Avatar className="size-10">
 									<AvatarFallback className="bg-primary text-white text-sm">
 										{user?.name?.charAt(0)?.toUpperCase() || "U"}
 									</AvatarFallback>

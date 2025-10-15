@@ -9,7 +9,7 @@ import { preferenceSchema } from "./user-schema";
 
 const mercadopago = new MercadoPagoConfig({ accessToken: process.env.NEXT_PRIVATE_MERCADOPAGO_ACCESS_TOKEN! });
 
-export const createPreference = actionClient.schema(preferenceSchema)
+export const createPreference = actionClient.inputSchema(preferenceSchema)
     .action(async ({ parsedInput: { new_plan_id, subscription_id } }) => {
 
         console.log("new_plan_id", new_plan_id);

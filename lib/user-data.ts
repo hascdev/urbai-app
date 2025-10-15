@@ -71,23 +71,32 @@ export async function existsUserByPhone(uid: string, phone: string) {
     }
 }
 
-export async function fetchSubscription(uid: string) {
+export async function fetchCurrentSubscription() {
 
     try {
 
         const supabase = await createClient();
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-        const { data, error } = await supabase .from('subscriptions').select('*').eq('user_id', uid);
+        if (authError) {
+            throw authError;
+        }
+
+        const { data, error } = await supabase
+            .from('subscriptions')
+            .select('*, plan:subscription_plans(name, queries)')
+            .eq('user_id', user?.id)
+            .eq('status', 'active').maybeSingle();
 
         if (error) {
             throw error;
         }
 
-        if (data.length === 0) {
+        if (!data) {
             return null;
         }
 
-        return data[0] as unknown as Subscription;
+        return data as unknown as Subscription;
 
     } catch (error) {
         console.error('Database Error:', error);
