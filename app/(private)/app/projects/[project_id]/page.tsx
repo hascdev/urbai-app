@@ -22,6 +22,7 @@ import { ResultsPanel } from "@/components/results-panel"
 import { ChatPanel } from "@/components/chat-panel"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useProjectStore } from "@/stores/project-store"
+import { toast } from "sonner"
 
 interface ChatMessage {
 	id: string
@@ -110,6 +111,14 @@ export default function ProjectPage() {
 		)
 	}
 
+	const handleContinueInWhatsApp = () => {
+		if (!user?.phone) {
+			toast.error("¡Ups! Debes actualizar tu número en la información de tu cuenta para continuar en WhatsApp.")
+			return;
+		}
+		window.open(`https://wa.me/56952197745`, '_blank')
+	}
+
 	if (isMobile) {
 		return (
 			<div className="h-screen flex flex-col bg-background overflow-hidden">
@@ -161,7 +170,11 @@ export default function ProjectPage() {
 								Exportar
 							</Button>
 						)} */}
-						<Button variant="ghost" size="sm" className="text-gray-600 hover:bg-gray-50">
+						<Button 
+							variant="ghost" size="sm" 
+							className="text-gray-600 hover:bg-gray-50"
+							onClick={handleContinueInWhatsApp}
+						>
 							<Smartphone className="h-4 w-4 mr-2" />
 							Continuar en WhatsApp
 						</Button>

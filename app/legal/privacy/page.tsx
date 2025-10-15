@@ -1,18 +1,48 @@
+"use client"    
 import { Button } from '@/components/ui/button'
-import Header from '@/components/web/header'
+import Image from 'next/image'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
-export default async function PrivacyPage() {
-
-
+export default function PrivacyPage() {
 
     return (
         <div className="min-h-screen bg-white">
 
             {/* Header */}
-            <Header />
+            <header className="sticky top-0 z-50 backdrop-blur-sm bg-white/80 border-b border-gray-100">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between items-center h-16">
+                        <div className="flex items-center">
+                            <Image src="/images/urbai-logo.png" alt="Urbai" width={120} height={40} className="h-8 w-auto" />
+                        </div>
+                        <nav className="hidden md:flex space-x-8 ml-auto mr-8">
+                            <a href="#que" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+                                ¿Qué?
+                            </a>
+                            <a href="#caracteristicas" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+                                Características
+                            </a>
+                            <a href="#libreria" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+                                Librería
+                            </a>
+                            <a href="#planes" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+                                Planes
+                            </a>
+                            <a href="#faq" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+                                FAQ
+                            </a>
+                        </nav>
+                        <Button
+                            className="bg-[#625BF6] hover:bg-[#5048E5] text-white font-medium transition-colors"
+                            onClick={() => (window.location.href = "/app")}
+                        >
+                            Comenzar ahora
+                        </Button>
+                    </div>
+                </div>
+            </header>
 
             {/* Privacy Policy */}
             <section className="py-10">
@@ -119,14 +149,14 @@ export default async function PrivacyPage() {
 
                     <h2 className="text-2xl font-bold tracking-tight mt-8 mb-4">11. Cambios en la Política de Privacidad</h2>
                     <p className="text-justify py-2">
-                        La Compañía se reserva el derecho de actualizar esta Política de Privacidad en cualquier momento. Te notificaremos de los cambios importantes                        
+                        La Compañía se reserva el derecho de actualizar esta Política de Privacidad en cualquier momento. Te notificaremos de los cambios importantes
                     </p>
                     <ul className="list-disc list-inside py-2">
                         <li>Las actualizaciones se publicarán en urbai.cl.</li>
                         <li>Se indicará visiblemente la “Fecha de última actualización”.</li>
                     </ul>
 
-                    
+
                 </div>
             </section>
 

@@ -65,11 +65,11 @@ export default function UserForm({ user }: { user: User }) {
         const existingUser = await existsUserByPhone(user.uid, phone);
         console.log("existingUser", existingUser);
         if (existingUser) {
-            toast.error("Información no fue actualizada. El número de whatsapp ya se encuentra registrado en otro usuario");
+            toast.error("El número de whatsapp ya se encuentra registrado en otro usuario");
         } else {
             console.log("handleUpdateUser", name, phone);
             execute({ uid: user.uid, name, phone, active: user.active });
-            toast.success(user.active ? "Información actualizada correctamente" : "Cuenta activada correctamente, te enviaremos un mensaje de bienvenida");
+            toast.success(user.active ? "Información actualizada correctamente" : "Tu número de whatsapp ha sido activado correctamente, te enviaremos un mensaje de bienvenida");
         }
     }
 
@@ -140,7 +140,7 @@ export default function UserForm({ user }: { user: User }) {
             <form className="flex justify-end mt-8">
                 <Button formAction={handleUpdateUser}
                     className="bg-primary hover:bg-primary/90 text-white" disabled={isPending || !values.name || !values.phone || errors.name.length > 0 || errors.phone.length > 0}>
-                    {user.active ? "Actualizar" : "Activar cuenta"}
+                    Actualizar
                 </Button>
             </form>
 

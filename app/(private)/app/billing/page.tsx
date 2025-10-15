@@ -45,7 +45,7 @@ const plans = [
 		currency: "CLP",
 		period: "mes",
 		subtitle: "(antes $24.990)",		
-		queries: "1.000",
+		queries: "1.500",
 		services: [
 			"Soporte prioritario por chat (respuesta prioritaria < 24 h).",
 			"Solicitud de incorporación de nuevos documentos a la Librería.",
@@ -303,7 +303,7 @@ export default function BillingPage() {
 
 											<div>
 												<p className="font-bold text-gray-900 mb-1.5">Consultas por mes</p>
-												<p className="text-gray-700">{plan.queries}</p>
+												<p className="text-lg font-bold text-[#625BF6]">{plan.queries}</p>
 											</div>
 
 											<div>

@@ -289,6 +289,20 @@ export default function LibraryPage() {
 		})
 	}
 
+	if (isLoading) {
+		return (
+			<div className="h-screen bg-white flex flex-col overflow-hidden">
+				<AppTopbar />
+				<main className="max-w-7xl mx-auto px-6 py-8">
+					<div className="text-center">
+						<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+						<p className="text-gray-600">Cargando...</p>
+					</div>
+				</main>
+			</div>
+		)
+	}
+
 	return (
 		<div className="min-h-screen bg-white">
 			<AppTopbar />
@@ -318,9 +332,7 @@ export default function LibraryPage() {
 				}
 
 				{/* Library Section */}
-				<div className="mb-12">
-
-				</div>
+				<div className="mb-12"></div>
 
 				{/* Filters */}
 				<Card className="bg-white border-gray-200 mb-6 shadow-sm">
