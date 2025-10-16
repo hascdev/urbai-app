@@ -40,9 +40,21 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
     const [refreshSubscription, setRefreshSubscription] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
+    const textareaRef = useRef<HTMLTextAreaElement>(null)
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+
+    const adjustTextareaHeight = () => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+            textarea.style.height = 'auto';
+            const lineHeight = 24; // Altura aproximada de una línea en px
+            const maxHeight = lineHeight * 4; // 4 filas máximo
+            const newHeight = Math.min(textarea.scrollHeight, maxHeight);
+            textarea.style.height = `${newHeight}px`;
+        }
     }
 
     useEffect(() => {
@@ -129,6 +141,11 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
         addMessage(userMessage);
         setMessage("");
         setIsLoading(true);
+        
+        // Resetear la altura del textarea
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+        }
 
         const projectLibrariesFiltered = projectLibraries.filter((pl) => activeLibraries.includes(pl.library.id));
         const vs_ids = projectLibrariesFiltered.map((pl) => pl.library.vector_store_id);
@@ -369,18 +386,22 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
                             </Button>                             */}
                         </div>
 
-                        <div className="flex-1 flex items-center h-8">
+                        <div className="flex-1 flex items-center min-h-8">
                             <Textarea
+                                ref={textareaRef}
                                 placeholder={isAddressSelected ? "Escribe tu pregunta asociada a la ubicación..." : "Escribe tu pregunta..."}
                                 value={message}
-                                onChange={(e) => setMessage(e.target.value)}
+                                onChange={(e) => {
+                                    setMessage(e.target.value);
+                                    adjustTextareaHeight();
+                                }}
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter" && !e.shiftKey) {
                                         e.preventDefault();
                                         handleSendMessage();
                                     }
                                 }}
-                                className="w-full h-full min-h-8 resize-none px-0 py-1.5 border-none bg-transparent text-gray-900 placeholder:text-gray-500 focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                                className="w-full min-h-8 max-h-24 resize-none px-0 py-1.5 border-none bg-transparent text-gray-900 placeholder:text-gray-500 focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 overflow-y-auto"
                                 rows={1}
                             />
                         </div>
