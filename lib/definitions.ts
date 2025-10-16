@@ -161,6 +161,7 @@ export interface ProjectMessage {
     content: string
     date?: string
     citations?: MessageCitation[] | null
+    location?: MessageLocation | null
 }
 
 export interface MessageCitation {
@@ -168,6 +169,13 @@ export interface MessageCitation {
     article: string;
     quote: string;
     file_id: string;
+}
+
+export interface MessageLocation {
+    address: string;
+    formatted_address: string;
+    latitude: number;
+    longitude: number;
 }
 
 export interface ProjectNote {

@@ -24,7 +24,7 @@ export function DocumentsPanel({ collapsed = false, onToggleCollapse, isMobile =
 
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("")
-    const [selectAll, setSelectAll] = useState(true)
+    const [selectAll, setSelectAll] = useState(false)
     const { project, activeLibraries, toggleLibrary, selectAllLibraries, deselectAllLibraries, setActiveLibraries, removeLibraryFromProject } = useProjectStore();
     const [hierarchicalDocuments, setHierarchicalDocuments] = useState<any>({});
     const [openPDFViewerDialog, setOpenPDFViewerDialog] = useState(false);

@@ -46,9 +46,15 @@ export const createProjectMessage = actionClient.inputSchema(z.object({
         article: z.string(),
         quote: z.string(),
         file_id: z.string()
-    })).optional().nullable()
+    })).optional().nullable(),
+    location: z.object({
+        address: z.string(),
+        formatted_address: z.string(),
+        latitude: z.number(),
+        longitude: z.number()
+    }).optional().nullable()
 }))
-    .action(async ({ parsedInput: { id, project_id, message, role, citations } }) => {
+    .action(async ({ parsedInput: { id, project_id, message, role, citations, location } }) => {
         console.log("createProjectMessage", project_id, message, role);
         const supabase = await createClient();
         const { error, data } = await supabase.from('project_messages').insert({
@@ -56,7 +62,8 @@ export const createProjectMessage = actionClient.inputSchema(z.object({
             project_id: project_id,
             content: message,
             role: role,
-            citations: citations
+            citations: citations,
+            location: location
         });
         
         if (error) {

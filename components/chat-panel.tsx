@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent } from "@/components/ui/card"
 import { MapPin, ArrowUp, StickyNote, Copy, Pencil, X } from "lucide-react"
 import { Textarea } from "./ui/textarea"
-import { ProjectMessage, SUBSCRIPTION_PLANS_IDS } from "@/lib/definitions"
+import { MessageLocation, ProjectMessage, SUBSCRIPTION_PLANS_IDS } from "@/lib/definitions"
 import { useMessageStore } from "@/stores/message-store"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useNoteStore } from "@/stores/note-store"
@@ -36,7 +36,7 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
     const [isLoading, setIsLoading] = useState(false)
     const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false)
     const [isAddressSelected, setIsAddressSelected] = useState(false)
-    const [addressData, setAddressData] = useState<any>(null);
+    const [addressData, setAddressData] = useState<MessageLocation | null>(null);
     const [refreshSubscription, setRefreshSubscription] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -135,7 +135,8 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
             id: crypto.randomUUID(),
             project_id: project_id,
             role: "user",
-            content: message
+            content: message,
+            location: addressData || null
         }
 
         addMessage(userMessage);

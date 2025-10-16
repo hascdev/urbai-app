@@ -22,7 +22,8 @@ export const useMessageStore = create<MessageStore>((set) => ({
             project_id: message.project_id,
             message: message.content,
             role: message.role,
-            citations: message.citations || null
+            citations: message.citations || null,
+            location: message.location || null
         });
 
         console.log("addMessage - result", result);
