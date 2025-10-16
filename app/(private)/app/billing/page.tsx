@@ -6,9 +6,11 @@ import { Badge } from "@/components/ui/badge"
 import { AppTopbar } from "@/components/app-topbar"
 import { useAuth } from "@/hooks/use-auth"
 import { Download, Calendar, AlertCircle, Star, Zap, Crown } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { createPreference } from "@/lib/mercadopago-action"
 import { toast } from "sonner"
+import { useEffect } from "react"
+import confetti from 'canvas-confetti';
 
 const plans = [
 	{
@@ -94,6 +96,18 @@ export default function BillingPage() {
 
 	const { user } = useAuth();
 	const router = useRouter();
+	const searchParams = useSearchParams();
+
+	useEffect(() => {
+		const status = searchParams.get('status');
+		if (status && status === 'success') {
+			confetti({
+				particleCount: 150,
+				spread: 100,
+				origin: { y: 0.6 }
+			});
+		}
+	}, [searchParams]);
 
 	const handleUpgrade = async (planId: string) => {
 		console.log("handleUpgrade", planId);
@@ -103,7 +117,8 @@ export default function BillingPage() {
 		}
 		await createPreference({
 			new_plan_id: planId,
-			subscription_id: user?.subscription?.id
+			subscription_id: user?.subscription?.id,
+			queries: user?.subscription?.plan?.queries
 		})
 	}
 

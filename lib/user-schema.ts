@@ -18,7 +18,8 @@ export const subscriptionSchema = z.object({
 
 export const preferenceSchema = z.object({
     new_plan_id: z.string(),
-    subscription_id: z.string()
+    subscription_id: z.string(),
+    queries: z.string()
 });
 
 export const feedbackSchema = z.object({

@@ -27,6 +27,7 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { LastUsersAvatar } from "@/components/last-users-avatar"
 
 const features = [
 	{
@@ -290,8 +291,6 @@ export default function Home() {
 	const [showRequestRestrictionModal, setShowRequestRestrictionModal] = useState(false)
 	const [showFiltersModal, setShowFiltersModal] = useState(false)
 
-	const [lastUsers, setLastUsers] = useState({ avatars: [], total: 0 })
-
 	const [requestForm, setRequestForm] = useState({
 		documentType: "",
 		documentName: "",
@@ -526,16 +525,6 @@ export default function Home() {
 		}, 0)
 	}
 
-	useEffect(() => {
-		const fetchLastUsers = async () => {
-			const response = await fetch("/api/user")
-			const { data } = await response.json()
-			console.log("Last users:", data)
-			setLastUsers({ avatars: data.last_10_avatar_urls || [], total: data.total_users || 0 });
-		}
-		fetchLastUsers();
-	}, [])
-
 	return (
 		<div className="min-h-screen bg-white">
 			{/* Header */}
@@ -608,28 +597,7 @@ export default function Home() {
 						</div>
 
 						{/* Urbai users section */}
-						<div className="flex flex-col items-center justify-center gap-4 mt-12">
-							<div className="flex items-center -space-x-3">
-								{
-									lastUsers.avatars.length > 0 && lastUsers.avatars.map((avatar, index) => (
-										<Avatar key={index} className="w-12 h-12 border-2 border-white shadow-md hover:scale-110 transition-transform">
-											<AvatarImage src={avatar} />
-											<AvatarFallback className="bg-gradient-to-br from-[#625BF6] to-[#5048E5] text-white">U{index + 1}</AvatarFallback>
-										</Avatar>
-									))
-								}
-								<Avatar className="w-auto h-12 border-2 border-white shadow-md bg-[#625BF6] hover:scale-110 transition-transform">
-									<AvatarFallback className="bg-gradient-to-br from-[#625BF6] to-[#5048E5] text-white text-xs font-semibold px-4">
-										y sumando...
-									</AvatarFallback>
-								</Avatar>
-							</div>
-							<div className="flex items-center gap-2">
-								<p className="text-sm text-gray-600">
-									<span className="font-semibold text-primary">+{lastUsers.total}</span> usuarios activos confían en Urbai
-								</p>
-							</div>
-						</div>
+						<LastUsersAvatar />
 					</div>
 				</div>
 			</section>

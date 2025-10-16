@@ -10,7 +10,7 @@ import { preferenceSchema } from "./user-schema";
 const mercadopago = new MercadoPagoConfig({ accessToken: process.env.NEXT_PRIVATE_MERCADOPAGO_ACCESS_TOKEN! });
 
 export const createPreference = actionClient.inputSchema(preferenceSchema)
-    .action(async ({ parsedInput: { new_plan_id, subscription_id } }) => {
+    .action(async ({ parsedInput: { new_plan_id, subscription_id, queries } }) => {
 
         console.log("new_plan_id", new_plan_id);
         const upgrade_plan = await fetchSubscriptionPlans(new_plan_id);
@@ -30,7 +30,8 @@ export const createPreference = actionClient.inputSchema(preferenceSchema)
                 metadata: {
                     user_id: user?.id,
                     new_plan_id: new_plan_id,
-                    subscription_id: subscription_id
+                    subscription_id: subscription_id,
+                    queries: queries
                 },
                 items: [{ id: upgrade_plan.id, title: upgrade_plan.name, quantity: 1, unit_price: Number(upgrade_plan.price), currency_id: upgrade_plan.currency }],
                 external_reference: "1"
