@@ -231,11 +231,10 @@ export default function Home() {
 	const [isTyping, setIsTyping] = useState(true)
 
 	const rotatingTexts = [
-		"Todo el contenido normativo que necesitas,",
-		"Todos los planes reguladores que necesitas,",
-		"Todas las circulares que necesitas,",
-		"Todas las leyes que necesitas,",
-		"Todos los decretos que necesitas,",
+		"todos los planes reguladores",
+		"todas las circulares",
+		"todas las leyes",
+		"todos los decretos",
 	]
 
 	useEffect(() => {
@@ -252,7 +251,7 @@ export default function Home() {
 				// Wait 2.5 seconds before starting to delete
 				timeoutId = setTimeout(() => {
 					setIsTyping(false)
-				}, 2500)
+				}, 4500)
 			}
 		} else {
 			// Deleting effect
@@ -564,36 +563,28 @@ export default function Home() {
 			{/* Hero Section */}
 			<section className="h-screen flex items-center justify-center">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-9 w-full">
-					<div className="flex flex-col items-center justify-center text-center gap-10">
-						<h1 className="text-4xl md:text-6xl font-bold text-gray-900 text-balance mb-4">
-							<span className="inline-block min-h-[1.2em]">
+					<div className="flex flex-col items-center justify-center text-center">
+						<h1 className="text-4xl md:text-6xl font-bold text-gray-900 text-balance mb-5">
+							Un experto que entiende
+						</h1>
+						<h1 className="text-4xl md:text-6xl font-bold text-gray-900 text-balance mb-10">
+							<span className="inline-block min-h-[1.2em] text-[#625BF6]">
 								{displayText}
 								<span className="animate-pulse">|</span>
-							</span>{" "}
-							<span className="text-[#625BF6]">en un solo lugar</span>
+							</span>
 						</h1>
-						<p className="text-xl text-gray-600 leading-relaxed max-w-3xl">
-							Agiliza tu investigación normativa con respuestas precisas y recursos relevantes para tus proyectos.
+						<p className="text-xl text-gray-600 font-medium leading-relaxed max-w-3xl mb-10">
+							Agiliza tu investigación normativa de urbanismo y construcción<br/> con respuestas precisas y recursos relevantes para tus proyectos.
 						</p>
-						<div className="flex flex-col sm:flex-row gap-4 justify-center">
+						<div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
 							<Button
 								size="lg"
 								className="bg-[#625BF6] hover:bg-[#5048E5] text-white font-medium px-8 py-4 text-lg transition-colors"
 								onClick={() => router.push("/app")}
 							>
-								Usar Urbai App
+								Probar Urbai
 								<ArrowRight className="ml-2 h-5 w-5" />
 							</Button>
-							{/* 
-						<Button
-							size="lg"
-							variant="outline"
-							className="border-[#625BF6] text-[#625BF6] hover:bg-[#625BF6] hover:text-white font-medium px-8 py-4 text-lg transition-colors bg-transparent"
-							onClick={() => window.open("https://wa.me/56912345678", "_blank")}
-						>
-							Usar en WhatsApp
-						</Button> 
-						*/}
 						</div>
 
 						{/* Urbai users section */}

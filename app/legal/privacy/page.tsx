@@ -18,19 +18,19 @@ export default function PrivacyPage() {
                             <Image src="/images/urbai-logo.png" alt="Urbai" width={120} height={40} className="h-8 w-auto" />
                         </div>
                         <nav className="hidden md:flex space-x-8 ml-auto mr-8">
-                            <a href="#que" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+                            <a href="/#que" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
                                 ¿Qué?
                             </a>
-                            <a href="#caracteristicas" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+                            <a href="/#caracteristicas" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
                                 Características
                             </a>
-                            <a href="#libreria" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+                            <a href="/#libreria" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
                                 Librería
                             </a>
-                            <a href="#planes" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+                            <a href="/#planes" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
                                 Planes
                             </a>
-                            <a href="#faq" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+                            <a href="/#faq" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
                                 FAQ
                             </a>
                         </nav>
@@ -56,7 +56,7 @@ export default function PrivacyPage() {
                         </Link>
                     </div>
                     <h1 className="text-3xl font-bold tracking-tight mt-4">Política de Privacidad</h1>
-                    <p className="text-muted-foreground my-4">Fecha de última actualización: 17 de junio de 2025</p>
+                    <p className="text-muted-foreground my-4">Fecha de última actualización: 17 de octubre de 2025</p>
                     <p className="text-justify py-2">
                         En <strong>urbai.cl</strong> (en adelante la <strong>"Compañía"</strong>), consideramos la protección de tus datos personales como parte de nuestra propuesta de valor.
                     </p>

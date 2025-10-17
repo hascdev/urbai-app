@@ -59,7 +59,7 @@ export function LastUsersAvatar() {
             </div>
             <div className="flex items-center gap-2">
                 <p className="text-sm text-gray-600">
-                    <span className="font-semibold text-primary">+{total}</span> usuarios activos confían en Urbai
+                    <span className="font-semibold text-primary">+{total}</span> usuarios han confiado en Urbai
                 </p>
             </div>
         </div>

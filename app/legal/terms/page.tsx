@@ -18,19 +18,19 @@ export default function TermsPage() {
 							<Image src="/images/urbai-logo.png" alt="Urbai" width={120} height={40} className="h-8 w-auto" />
 						</div>
 						<nav className="hidden md:flex space-x-8 ml-auto mr-8">
-							<a href="#que" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+							<a href="/#que" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
 								¿Qué?
 							</a>
-							<a href="#caracteristicas" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+							<a href="/#caracteristicas" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
 								Características
 							</a>
-							<a href="#libreria" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+							<a href="/#libreria" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
 								Librería
 							</a>
-							<a href="#planes" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+							<a href="/#planes" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
 								Planes
 							</a>
-							<a href="#faq" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
+							<a href="/#faq" className="text-gray-900 hover:text-[#625BF6] font-medium transition-colors">
 								FAQ
 							</a>
 						</nav>
@@ -56,7 +56,7 @@ export default function TermsPage() {
                         </Link>
                     </div>
                     <h1 className="text-3xl font-bold tracking-tight mt-4">Términos y Condiciones</h1>
-                    <p className="text-muted-foreground my-4">Fecha de última actualización: 17 de junio de 2025</p>
+                    <p className="text-muted-foreground my-4">Fecha de última actualización: 17 de octubre de 2025</p>
                     <h2 className="text-2xl font-bold tracking-tight mt-8 mb-4">1. Introducción</h2>
                     <p className="text-justify py-2">
                         Estos Términos y Condiciones (en adelante, los "Términos") constituyen un acuerdo legal vinculante entre usted, ya sea a título personal o representante de una entidad, y urbai.cl ("Urbai", "nosotros" o "nuestro"). Urbai ofrece una plataforma de inteligencia artificial, accesible a través de WhatsApp, para proporcionar asistencia normativa y técnica a profesionales y empresas del área de arquitectura, ingeniería y construcción (los "Servicios"). Los Servicios incluyen nuestro sitio web urbai.cl, el acceso a nuestro agente en WhatsApp, y cualquier interfaz o módulo que diseñemos para interactuar con usted, ya sea en redes sociales, APIs, o formatos similares (colectivamente referidos como los "Canales" o los "Servicios").
@@ -88,20 +88,35 @@ export default function TermsPage() {
                             <tr className="hover:bg-gray-50">
                                 <td className="px-6 py-4 text-sm text-gray-900">Starter</td>
                                 <td className="px-6 py-4 text-sm text-gray-900">Gratis</td>
-                                <td className="px-6 py-4 text-sm text-gray-900">5</td>
-                                <td className="px-6 py-4 text-sm text-gray-900">Normativa básica (LGUC, OGUC)</td>
+                                <td className="px-6 py-4 text-sm text-gray-900">15</td>
+                                <td className="px-6 py-4 text-sm text-gray-900">
+                                    <ul className="list-disc list-inside space-y-2">
+                                        <li>Todo el catálogo de documentos normativos</li>
+                                    </ul>
+                                </td>
                             </tr>
                             <tr className="hover:bg-gray-50">
                                 <td className="px-6 py-4 text-sm text-gray-900">Basics</td>
                                 <td className="px-6 py-4 text-sm text-gray-900">$9.990</td>
-                                <td className="px-6 py-4 text-sm text-gray-900">Hasta 100</td>
-                                <td className="px-6 py-4 text-sm text-gray-900">Normativa básica (LGUC, OGUC)</td>
+                                <td className="px-6 py-4 text-sm text-gray-900">150</td>
+                                <td className="px-6 py-4 text-sm text-gray-900">
+                                    <ul className="list-disc list-inside space-y-2">
+                                        <li>Todo el catálogo de documentos normativos</li>
+                                        <li>Soporte por correo electrónico</li>
+                                    </ul>
+                                </td>
                             </tr>
                             <tr className="hover:bg-gray-50">
                                 <td className="px-6 py-4 text-sm text-gray-900">Pro</td>
                                 <td className="px-6 py-4 text-sm text-gray-900">$24.990</td>
-                                <td className="px-6 py-4 text-sm text-gray-900">Ilimitadas</td>
-                                <td className="px-6 py-4 text-sm text-gray-900">Incluye circulares DDU, IPT, soporte prioritario</td>
+                                <td className="px-6 py-4 text-sm text-gray-900">1.500</td>
+                                <td className="px-6 py-4 text-sm text-gray-900">
+                                    <ul className="list-disc list-inside space-y-2">
+                                        <li>Todo el catálogo de documentos normativos</li>
+                                        <li>Soporte prioritario por chat (respuesta prioritaria {"<"} 24 h).</li>
+                                        <li>Solicitud de incorporación de nuevos documentos a la Librería.</li>
+                                    </ul>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
