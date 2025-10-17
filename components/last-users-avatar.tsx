@@ -1,6 +1,7 @@
 "use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useEffect, useState } from "react";
 
 export function LastUsersAvatar() {
@@ -8,6 +9,7 @@ export function LastUsersAvatar() {
     const [avatars, setAvatars] = useState<string[]>([]);
     const [total, setTotal] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(true);
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -19,8 +21,9 @@ export function LastUsersAvatar() {
                     }
                 });
 
+                console.log("isMobile", isMobile);
                 const { data } = await response.json();
-                setAvatars(data.last_10_avatar_urls || []);
+                setAvatars(isMobile ? data.last_10_avatar_urls.slice(0, 5) : data.last_10_avatar_urls || []);
                 setTotal(data.total_users || 0);
             } catch (error) {
                 console.error("Error fetching users:", error);
