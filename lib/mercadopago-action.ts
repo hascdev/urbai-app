@@ -13,6 +13,8 @@ export const createPreference = actionClient.inputSchema(preferenceSchema)
     .action(async ({ parsedInput: { new_plan_id, subscription_id, queries } }) => {
 
         console.log("new_plan_id", new_plan_id);
+        console.log("subscription_id", subscription_id);
+        console.log("queries", queries);
         const upgrade_plan = await fetchSubscriptionPlans(new_plan_id);
 
         const supabase = await createClient();

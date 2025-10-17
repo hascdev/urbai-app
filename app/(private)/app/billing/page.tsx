@@ -110,21 +110,19 @@ export default function BillingPage() {
 	}, [searchParams]);
 
 	const handleUpgrade = async (planId: string) => {
-		console.log("handleUpgrade", planId);
+		
 		if (!user?.subscription?.id) {
 			toast.info("No tienes una suscripción activa");
 			return;
 		}
-		await createPreference({
-			new_plan_id: planId,
-			subscription_id: user?.subscription?.id,
-			queries: user?.subscription?.plan?.queries
-		})
-	}
 
-	const handleDownloadInvoice = (invoiceId: string) => {
-		// Mock download
-		alert(`Descargando factura ${invoiceId}...`)
+		console.log("handleUpgrade", planId);
+		const result = await createPreference({
+			new_plan_id: planId,
+			subscription_id: String(user?.subscription?.id),
+			queries: String(user?.subscription?.plan?.queries)
+		});
+		console.log("result", result);
 	}
 
 	return (

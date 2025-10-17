@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 export function LastUsersAvatar() {
 
-    const [avatars, setAvatars] = useState<string[]>([]);
+    const [allAvatars, setAllAvatars] = useState<string[]>([]);
     const [total, setTotal] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(true);
     const isMobile = useIsMobile();
@@ -21,9 +21,8 @@ export function LastUsersAvatar() {
                     }
                 });
 
-                console.log("isMobile", isMobile);
                 const { data } = await response.json();
-                setAvatars(isMobile ? data.last_10_avatar_urls.slice(0, 5) : data.last_10_avatar_urls || []);
+                setAllAvatars(data.last_10_avatar_urls || []);
                 setTotal(data.total_users || 0);
             } catch (error) {
                 console.error("Error fetching users:", error);
@@ -34,6 +33,9 @@ export function LastUsersAvatar() {
 
         fetchUsers();
     }, []);
+
+    // Aplicar el filtro de mobile en el render, no en el fetch
+    const avatars = isMobile ? allAvatars.slice(0, 5) : allAvatars;
 
     if (isLoading) {
         return null; // O puedes mostrar un skeleton loader
