@@ -19,6 +19,7 @@ import { useLibraryStore } from "@/stores/library-store"
 import { useAuth } from "@/hooks/use-auth"
 import { toast } from "sonner"
 import { fetchCurrentSubscription } from "@/lib/user-data"
+import { LIBRARY_TYPE_PRC } from "@/lib/constants"
 
 interface ChatPanelProps {
     isMobile?: boolean
@@ -131,6 +132,13 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
             return
         }
 
+        // Check if user has a PRC library and no address selected
+        const prcLibrary = activeLibraries.find((lid) => projectLibraries.find((pl) => pl.library.id === lid)?.library.type_id === LIBRARY_TYPE_PRC);
+        if (prcLibrary && !addressData) {
+            toast.error("!Ups! No es posible realizar una consulta a un Plan Regulador Comunal (PRC) sin seleccionar una ubicación");
+            return
+        }
+        /*
         const userMessage: ProjectMessage = {
             id: crypto.randomUUID(),
             project_id: project_id,
@@ -142,7 +150,7 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
         addMessage(userMessage);
         setMessage("");
         setIsLoading(true);
-        
+
         // Resetear la altura del textarea
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
@@ -162,6 +170,7 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
         addMessage(urbaiMessage);
         setIsLoading(false);
         setRefreshSubscription(true);
+        */
     }
 
     const handleSaveNote = async (content: string) => {

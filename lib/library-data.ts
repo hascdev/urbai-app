@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import { Library, LibraryDocument } from "./definitions";
+import { Library } from "./definitions";
 
 export async function fetchLibraries() {
 
@@ -9,10 +9,15 @@ export async function fetchLibraries() {
 
         const supabase = await createClient();
 
-        const { data, error } = await supabase
+        let query = supabase
             .from('library')
-            .select('*, status:library_status(name), type:library_types(name, level_id, level:library_levels(name)), location:library_locations(name), documents:library_docs(*), favorites:library_favorites(*)')
-            .eq('status_id', 1) // 1 = Actualizado
+            .select('*, status:library_status(name), type:library_types(name, level_id, level:library_levels(name)), location:library_locations(name, commune_id), documents:library_docs(*), favorites:library_favorites(*)')
+
+        if (process.env.NEXT_PUBLIC_ENV === 'production') {
+            query = query.neq('status_id', 4); // 4 = No Liberado
+        }
+            
+        const { data, error } = await query;
 
         if (error) {
             throw error;

@@ -127,7 +127,7 @@ export function AddAddressDialog({ open, onOpenChange, onAddressSelect, isAddres
                 <DialogHeader className="space-y-4">
                     <DialogTitle className="flex items-center gap-2">
                         <MapPin className="h-5 w-5" />
-                        Seleccionar ubicación
+                        Dirección de tu proyecto
                     </DialogTitle>
                     <DialogDescription>Esta dirección permitará que tus respuestas sean más precisas y relevantes.</DialogDescription>
                 </DialogHeader>

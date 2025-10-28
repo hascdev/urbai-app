@@ -1,0 +1,1 @@
+export const LIBRARY_TYPE_PRC = 5; // Plan Regulador Comunal

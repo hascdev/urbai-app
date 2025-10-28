@@ -1,6 +1,6 @@
 import { Library, Project } from "@/lib/definitions";
 import { createProjectLibraries, createProjectLibrary, deleteProject, deleteProjectLibrary } from "@/lib/project-action";
-import { fetchProjects, fetchProject, fetchLastProjects, fetchProjectLibraries } from "@/lib/project-data";
+import { fetchProjects, fetchProject, fetchLastProjects, fetchProjectLibraries, fetchProjectsByLocation } from "@/lib/project-data";
 import { create } from "zustand";
 
 interface ProjectStore {
@@ -8,6 +8,7 @@ interface ProjectStore {
     project: Project | null;
     activeLibraries: string[];
     getProjects: () => Promise<void>;
+    getProjectsByLocation: (commune_id: string) => Promise<void>;
     getLastProjects: () => Promise<void>;
     removeProject: (pid: string) => Promise<void>;
     getProject: (id: string) => Promise<void>;
@@ -26,6 +27,10 @@ export const useProjectStore = create<ProjectStore>((set) => ({
     activeLibraries: [],
     getProjects: async () => {
         const projects = await fetchProjects();
+        set({ projects })
+    },
+    getProjectsByLocation: async (commune_id: string) => {
+        const projects = await fetchProjectsByLocation(commune_id);
         set({ projects })
     },
     getLastProjects: async () => {

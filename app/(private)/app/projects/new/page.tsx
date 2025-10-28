@@ -35,7 +35,7 @@ export default function NewProjectPage() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 		if (!formData.name.trim() || !formData.comuna || !formData.type) {
-			alert("Por favor completa los campos requeridos")
+			toast.info("Por favor completa los campos requeridos")
 			return
 		}
 

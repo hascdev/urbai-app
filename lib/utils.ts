@@ -39,3 +39,18 @@ export function renderBadges(answer: string, citations: { id: string; article: s
 	}
 	return html;
 }
+
+export const libraryLevelColors = {
+	1: "bg-red-100 text-red-800 border-red-200 hover:bg-red-200 hover:text-red-800 hover:border-red-200",
+	2: "bg-orange-100 text-orange-800 border-orange-200 hover:bg-orange-200 hover:text-orange-800 hover:border-orange-200",
+	3: "bg-yellow-100 text-black border-yellow-200 hover:bg-yellow-200 hover:text-black hover:border-yellow-200",
+	4: "bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200 hover:text-blue-800 hover:border-blue-200",
+	5: "bg-green-100 text-green-800 border-green-200 hover:bg-green-200 hover:text-green-800 hover:border-green-200"
+}
+
+export const libraryStatusColors = {
+	"Actualizado": "bg-green-500/10 text-green-600 hover:bg-green-200 hover:text-green-600 hover:border-green-200",
+	"Obsoleto": "bg-red-500/10 text-red-400 hover:bg-red-200 hover:text-red-400 hover:border-red-200",
+	"En revisión": "bg-yellow-500/10 text-yellow-400 hover:bg-yellow-200 hover:text-yellow-400 hover:border-yellow-200",
+	"No Liberado": "bg-red-500/10 text-red-400 hover:bg-red-100 hover:text-red-400 hover:border-red-200",
+}

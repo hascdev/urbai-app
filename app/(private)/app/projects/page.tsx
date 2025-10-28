@@ -158,15 +158,21 @@ export default function ProjectsPage() {
 													</div>
 												</div>
 
-												{project.tags && project.tags.length > 0 && (
-													<div className="flex flex-wrap gap-1">
-														{project.tags.split(',').map((tag) => (
-															<Badge key={tag} variant="secondary" className="bg-primary/10 text-primary text-xs">
-																{tag}
-															</Badge>
-														))}
-													</div>
-												)}
+												{
+													project.tags && project.tags.length > 0 ? (
+														<div className="flex flex-wrap gap-1">
+															{project.tags.split(',').map((tag) => (
+																<Badge key={tag} variant="secondary" className="bg-primary/10 text-primary text-xs">
+																	{tag}
+																</Badge>
+															))}
+														</div>
+													) : (
+														<div className="flex flex-wrap gap-1">
+															&nbsp;
+														</div>
+													)
+												}
 
 												<Button
 													size="sm"

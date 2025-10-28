@@ -75,6 +75,45 @@ export async function fetchProjects() {
     }
 }
 
+export async function fetchProjectsByLocation(commune_id: string) {
+
+    try {
+
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        const { data, error } = await supabase
+            .from('project')
+            .select('*, type:project_types(name), commune:communes(name), project_library(library_id)')
+            .eq('user_id', user?.id)
+            .eq('commune_id', commune_id);
+
+        if (error) {
+            throw error;
+        }
+
+        console.log("projects by location", data);
+
+        for (const project of data) {
+
+            const { data: libraries, error: librariesError } = await supabase
+                .from('library')
+                .select('*, status:library_status(name), type:library_types(name, level_id, level:library_levels(name)), location:library_locations(name), documents:library_docs(*)')
+                .in('id', project.project_library.map((pl: any) => pl.library_id));
+            
+            if (librariesError) {
+                throw librariesError;
+            }
+            project.libraries = libraries;
+        }
+
+        return data as unknown as Project[];
+
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch projects data.');
+    }
+}
+
 export async function fetchLastProjects() {
 
     try {
@@ -166,7 +205,7 @@ export async function fetchProjectLibraries(project_id: string) {
         const supabase = await createClient();
         const { data, error } = await supabase
             .from('project_library')
-            .select('*, library:library(id, name, status:library_status(name), type:library_types(name, level_id, level:library_levels(name)), location:library_locations(name), documents:library_docs(*), vector_store_id)')
+            .select('*, library:library(id, name, type_id, status:library_status(name), type:library_types(name, level_id, level:library_levels(name)), location:library_locations(name, commune_id), documents:library_docs(*), vector_store_id)')
             .eq('project_id', project_id);
 
         if (error) {

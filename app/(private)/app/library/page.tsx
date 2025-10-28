@@ -20,6 +20,8 @@ import { useProjectStore } from "@/stores/project-store"
 import { createFavorite } from "@/lib/library-action"
 import { toast } from "sonner"
 import { ProjectSelectorDialog } from "@/components/project-selector-dialog"
+import { libraryLevelColors, libraryStatusColors } from "@/lib/utils"
+import { LIBRARY_TYPE_PRC } from "@/lib/constants"
 
 type ViewMode = "grid" | "list" | "map"
 
@@ -43,25 +45,11 @@ const sortOptions = [
 	{ value: "hierarchy", label: "Jerarquía normativa" },
 ]
 
-const libraryLevelColors = {
-	1: "bg-red-100 text-red-800 border-red-200 hover:bg-red-200 hover:text-red-800 hover:border-red-200",
-	2: "bg-orange-100 text-orange-800 border-orange-200 hover:bg-orange-200 hover:text-orange-800 hover:border-orange-200",
-	3: "bg-yellow-100 text-black border-yellow-200 hover:bg-yellow-200 hover:text-black hover:border-yellow-200",
-	4: "bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200 hover:text-blue-800 hover:border-blue-200",
-	5: "bg-green-100 text-green-800 border-green-200 hover:bg-green-200 hover:text-green-800 hover:border-green-200"
-}
-
-const libraryStatusColors = {
-	"Actualizado": "bg-green-500/10 text-green-600 hover:bg-green-200 hover:text-green-600 hover:border-green-200",
-	"Obsoleto": "bg-red-500/10 text-red-400 hover:bg-red-200 hover:text-red-400 hover:border-red-200",
-	"En revisión": "bg-yellow-500/10 text-yellow-400 hover:bg-yellow-200 hover:text-yellow-400 hover:border-yellow-200",
-}
-
 export default function LibraryPage() {
 
 	const { user } = useAuth();
 	const { libraries, refreshLibraries } = useLibrary();
-	const { projects, getProjects, project, getProject, addLibraryToProject, addLibrariesToProject } = useProjectStore();
+	const { projects, getProjects, getProjectsByLocation, project, getProject, addLibraryToProject, addLibrariesToProject } = useProjectStore();
 	const { filterData, isLoading: filtersLoading, error: filtersError } = useLibraryFilters();
 	const router = useRouter()
 	const searchParams = useSearchParams()
@@ -107,7 +95,20 @@ export default function LibraryPage() {
 
 		let filtered = libraries;
 		if (projectId && project) {
-			filtered = libraries.filter((library) => !project.libraries.some((projectLibrary) => projectLibrary.id === library.id));
+			// Filter libraries that are not in the project
+			// For type_id === 5 (PRC), only show libraries from the same comuna
+			filtered = libraries.filter((library) => {
+				// No mostrar librerías que ya están en el proyecto
+				const isNotInProject = !project.libraries.some((projectLibrary) => projectLibrary.id === library.id);
+				
+				// Si es type_id === 5 (PRC), además verificar que sea de la misma comuna
+				if (library.type_id === 5) {
+					return isNotInProject && library.location.commune_id === project.commune_id;
+				}
+				
+				// Para otros tipos, solo verificar que no esté en el proyecto
+				return isNotInProject;
+			});
 		}
 
 		// Search filter
@@ -178,6 +179,20 @@ export default function LibraryPage() {
 
 	const handleDocumentSelect = (docId: string, checked: boolean) => {
 		if (checked) {
+			// Verificar si el documento a seleccionar es type_id === 5
+			const docToSelect = libraries.find((lib) => lib.id === docId)
+			if (docToSelect?.type_id === LIBRARY_TYPE_PRC) {
+				// Si ya hay un documento type_id === 5 seleccionado, deseleccionarlo primero
+				const currentTypeId5 = selectedDocuments.find((id) => {
+					const lib = libraries.find((l) => l.id === id)
+					return lib?.type_id === LIBRARY_TYPE_PRC
+				})
+				if (currentTypeId5) {
+					// Remover el anterior type_id === 5 y agregar el nuevo
+					setSelectedDocuments([...selectedDocuments.filter((id) => id !== currentTypeId5), docId])
+					return
+				}
+			}
 			setSelectedDocuments([...selectedDocuments, docId])
 		} else {
 			setSelectedDocuments(selectedDocuments.filter((id) => id !== docId))
@@ -186,16 +201,29 @@ export default function LibraryPage() {
 
 	const handleSelectAll = (checked: boolean) => {
 		if (checked) {
-			setSelectedDocuments(filteredDocuments.map((doc) => doc.id))
+			// Filtrar documentos con type_id === 5
+			const typeId5Docs = filteredDocuments.filter((doc) => doc.type_id === 5)
+			const otherDocs = filteredDocuments.filter((doc) => doc.type_id !== 5)
+
+			// Si hay documentos type_id === 5, solo seleccionar el primero junto con los demás
+			if (typeId5Docs.length > 0) {
+				setSelectedDocuments([...otherDocs.map((doc) => doc.id), typeId5Docs[0].id])
+			} else {
+				// Si no hay documentos type_id === 5, seleccionar todos normalmente
+				setSelectedDocuments(filteredDocuments.map((doc) => doc.id))
+			}
 		} else {
 			setSelectedDocuments([])
 		}
 	}
 
-	const handleAddToProject = async (lid: string) => {
-		if (projectId) {			
-			console.log(`Adding document ${lid} to project ${projectId}`)
-			const library = libraries.find((library) => library.id === lid);
+	const handleAddToProject = async (library: Library) => {
+
+		console.log("handleAddToProject", library);
+
+		// Add library to project from project page
+		if (projectId) {
+			console.log(`Adding document ${library.id} to project ${projectId}`)
 			if (library) {
 				await addLibraryToProject(projectId, library);
 				toast.success("Documento añadido al proyecto exitosamente");
@@ -205,15 +233,26 @@ export default function LibraryPage() {
 		}
 
 		// From click on add to project button in the library card
-		await getProjects();
-		setSelectedDocForProject(lid)
-		setShowProjectSelector(true)
+		if (library.type_id !== LIBRARY_TYPE_PRC) {
+			// Show all projects for non PRC (Plan Regulador Comunal) library types
+			await getProjects();
+		} else {
+			// Show only projects in the same comuna
+			await getProjectsByLocation(library.location.commune_id);
+		}
+
+		setSelectedDocForProject(library.id);
+		setShowProjectSelector(true);
 	}
 
 	const handleBulkAddToProject = async () => {
+
+		// Get libraries to add
+		const librariesToAdd = selectedDocuments.map((lid) => libraries.find((library) => library.id === lid)).filter((library) => library !== undefined);
+		console.log("librariesToAdd", librariesToAdd);
+
 		if (projectId) {
 			console.log(`Adding documents ${selectedDocuments} to project ${projectId}`)
-			const librariesToAdd = selectedDocuments.map((lid) => libraries.find((library) => library.id === lid)).filter((library) => library !== undefined);
 			if (librariesToAdd && librariesToAdd.length > 0) {
 				await addLibrariesToProject(projectId, librariesToAdd);
 				toast.success(`${selectedDocuments.length} documentos añadidos al proyecto exitosamente`);
@@ -224,8 +263,16 @@ export default function LibraryPage() {
 			return
 		}
 
-		// From click on add to project button in the alert dialog
-		await getProjects();
+		const prcLibrary = librariesToAdd.find((library) => library?.type_id === LIBRARY_TYPE_PRC);
+
+		if (!prcLibrary) {
+			// Show all projects for non PRC (Plan Regulador Comunal) library types
+			await getProjects();
+		} else {
+			// Show only projects in the same comuna of the PRC library
+			await getProjectsByLocation(prcLibrary.location.commune_id);
+		}
+
 		setShowProjectSelector(true);
 	}
 
@@ -485,9 +532,9 @@ export default function LibraryPage() {
 					<Card className="bg-primary/5 border-primary/20 mb-6">
 						<CardContent className="p-4">
 							<div className="flex items-center justify-between">
-								<span className="text-primary font-medium">
+								<span className="text-sm text-primary font-medium">
 									{selectedDocuments.length} documento{selectedDocuments.length !== 1 ? "s" : ""} seleccionado
-									{selectedDocuments.length !== 1 ? "s" : ""}
+									{selectedDocuments.length !== 1 ? "s" : ""}. Recuerda que solo puedes seleccionar un Plan Regulador Comunal (PRC) a la vez.
 								</span>
 								<div className="flex space-x-2">
 									<Button
@@ -576,7 +623,7 @@ export default function LibraryPage() {
 														viewMode={viewMode}
 														isSelected={selectedDocuments.includes(library.id)}
 														onSelect={(checked) => handleDocumentSelect(library.id, checked)}
-														onAddToProject={() => handleAddToProject(library.id)}
+														onAddToProject={() => handleAddToProject(library)}
 														onView={() => router.push(`/app/library/${library.id}`)}
 														projectMode={!!projectId}
 														hierarchyLevel={Number.parseInt(level)}
@@ -596,7 +643,7 @@ export default function LibraryPage() {
 										viewMode={viewMode}
 										isSelected={selectedDocuments.includes(library.id)}
 										onSelect={(checked) => handleDocumentSelect(library.id, checked)}
-										onAddToProject={() => handleAddToProject(library.id)}
+										onAddToProject={() => handleAddToProject(library)}
 										onView={() => router.push(`/app/library/${library.id}`)}
 										projectMode={!!projectId}
 									/>
@@ -669,7 +716,7 @@ function LibraryCard({
 		setIsFavorite(library.favorites.some((favorite) => favorite.library_id === library.id));
 	}, [library.id]);
 
-	const handleUpdateFavorite = async () => {	
+	const handleUpdateFavorite = async () => {
 		setIsFavorite(!isFavorite);
 		createFavorite({ library_id: library.id, favorite: !isFavorite });
 	};

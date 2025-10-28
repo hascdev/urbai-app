@@ -6,12 +6,12 @@ import z from "zod";
 import { Project, ProjectMessage, ProjectNote } from "@/lib/definitions";
 
 export const createProject = actionClient.inputSchema(z.object({
-        name: z.string(),
-        comuna: z.string(),
-        type: z.string(),
-        description: z.string(),
-        tags: z.string(),
-    }))
+    name: z.string(),
+    comuna: z.string(),
+    type: z.string(),
+    description: z.string(),
+    tags: z.string(),
+}))
     .action(async ({ parsedInput: { name, comuna, type, description, tags } }) => {
 
         console.log("createProject", name, comuna, type, description, tags);
@@ -21,7 +21,7 @@ export const createProject = actionClient.inputSchema(z.object({
         const { error, data } = await supabase.from('project').insert({
             user_id: user?.id,
             name: name,
-            location_id: comuna,
+            commune_id: comuna,
             type_id: type,
             description: description,
             tags: tags
@@ -30,6 +30,31 @@ export const createProject = actionClient.inputSchema(z.object({
         if (error) {
             console.error("createProject - error", error);
             return { failure: error.message };
+        }
+
+        // Buscar PRC en la comuna y agregar al proyecto
+        const { error: libraryError, data: library } = await supabase
+            .from('library')
+            .select('*, library_locations!inner(name, commune_id)')
+            .eq('library_locations.commune_id', comuna).maybeSingle();
+
+        if (libraryError) {
+            console.error("createProject - libraryError", libraryError);
+            return { failure: libraryError.message };
+        }
+        console.log("library", library);
+
+        if (library) {
+            
+            const { error: projectLibraryError } = await supabase.from('project_library').insert({
+                project_id: data.id,
+                library_id: library.id
+            });
+            
+            if (projectLibraryError) {
+                console.error("createProject - projectLibraryError", projectLibraryError);
+                return { failure: projectLibraryError.message };
+            }
         }
 
         return { project: data as unknown as Project };
@@ -65,7 +90,7 @@ export const createProjectMessage = actionClient.inputSchema(z.object({
             citations: citations,
             location: location
         });
-        
+
         if (error) {
             console.error("createProjectMessage - error", error);
             return { failure: error.message };
@@ -73,7 +98,7 @@ export const createProjectMessage = actionClient.inputSchema(z.object({
 
         return { success: "Message created successfully" };
     }
-);
+    );
 
 export const deleteProject = actionClient.inputSchema(z.object({
     project_id: z.string(),
@@ -90,7 +115,7 @@ export const deleteProject = actionClient.inputSchema(z.object({
 
         return { success: "Project deleted successfully" };
     }
-);
+    );
 
 export const createProjectLibrary = actionClient.inputSchema(z.object({
     project_id: z.string(),
@@ -103,7 +128,7 @@ export const createProjectLibrary = actionClient.inputSchema(z.object({
             project_id: project_id,
             library_id: library_id
         });
-        
+
         if (error) {
             console.error("createProjectLibrary - error", error);
             return { failure: error.message };
@@ -111,16 +136,16 @@ export const createProjectLibrary = actionClient.inputSchema(z.object({
 
         return { success: "Library created successfully" };
     }
-);
+    );
 
 export const createProjectLibraries = actionClient.inputSchema(z.object({
     project_id: z.string(),
     library_ids: z.array(z.string()),
 }))
     .action(async ({ parsedInput: { project_id, library_ids } }) => {
-        
+
         console.log("createProjectLibraries", project_id, library_ids);
-        
+
         const supabase = await createClient();
         const projectLibrary = library_ids.map((lid) => ({
             project_id: project_id,
@@ -128,7 +153,7 @@ export const createProjectLibraries = actionClient.inputSchema(z.object({
         }));
 
         const { error, data } = await supabase.from('project_library').insert(projectLibrary);
-        
+
         if (error) {
             console.error("createProjectLibraries - error", error);
             return { failure: error.message };
@@ -136,7 +161,7 @@ export const createProjectLibraries = actionClient.inputSchema(z.object({
 
         return { success: "Libraries created successfully" };
     }
-);
+    );
 
 export const deleteProjectLibrary = actionClient.inputSchema(z.object({
     project_id: z.string(),
@@ -154,7 +179,7 @@ export const deleteProjectLibrary = actionClient.inputSchema(z.object({
 
         return { success: "Library deleted successfully" };
     }
-);
+    );
 
 export const createProjectNote = actionClient.inputSchema(z.object({
     project_id: z.string(),
@@ -177,7 +202,7 @@ export const createProjectNote = actionClient.inputSchema(z.object({
 
         return { success: "Note created successfully", note: data as unknown as ProjectNote };
     }
-);
+    );
 
 export const updateProjectNote = actionClient.inputSchema(z.object({
     note_id: z.string(),
@@ -187,7 +212,7 @@ export const updateProjectNote = actionClient.inputSchema(z.object({
     .action(async ({ parsedInput: { note_id, name, content } }) => {
         console.log("updateProjectNote", note_id, name, content);
         const supabase = await createClient();
-        
+
         const updateData: any = {};
         if (name !== undefined) updateData.name = name;
         if (content !== undefined) updateData.content = content;
@@ -206,7 +231,7 @@ export const updateProjectNote = actionClient.inputSchema(z.object({
 
         return { success: "Note updated successfully", note: data as unknown as ProjectNote };
     }
-);
+    );
 
 export const deleteProjectNote = actionClient.inputSchema(z.object({
     note_id: z.string(),
@@ -223,4 +248,4 @@ export const deleteProjectNote = actionClient.inputSchema(z.object({
 
         return { success: "Note deleted successfully" };
     }
-);
+    );

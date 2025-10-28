@@ -93,13 +93,7 @@ export interface LibraryStatus {
 export interface LibraryLocation {
     id: string;
     name: string;
-    created_at: string;
-    updated_at: string;
-}
-
-export interface LibraryLocation {
-    id: string;
-    name: string;
+    commune_id: string;
     created_at: string;
     updated_at: string;
 }
