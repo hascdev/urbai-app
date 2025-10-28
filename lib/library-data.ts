@@ -13,7 +13,8 @@ export async function fetchLibraries() {
             .from('library')
             .select('*, status:library_status(name), type:library_types(name, level_id, level:library_levels(name)), location:library_locations(name, commune_id), documents:library_docs(*), favorites:library_favorites(*)')
 
-        if (process.env.NEXT_PUBLIC_ENV === 'production') {
+        console.log("process.env.NODE_ENV", process.env.NODE_ENV);
+        if (process.env.NODE_ENV === 'production') {
             query = query.neq('status_id', 4); // 4 = No Liberado
         }
             
