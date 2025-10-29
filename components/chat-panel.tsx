@@ -138,7 +138,7 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
             toast.error("!Ups! No es posible realizar una consulta a un Plan Regulador Comunal (PRC) sin seleccionar una ubicación");
             return
         }
-        /*
+        
         const userMessage: ProjectMessage = {
             id: crypto.randomUUID(),
             project_id: project_id,
@@ -170,7 +170,7 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
         addMessage(urbaiMessage);
         setIsLoading(false);
         setRefreshSubscription(true);
-        */
+        
     }
 
     const handleSaveNote = async (content: string) => {
