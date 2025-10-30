@@ -4,11 +4,13 @@ export async function POST(request: NextRequest) {
 
 	try {
 
-		const { message, vs_ids } = await request.json()
+		const { message, vs_ids, location, commune_id } = await request.json();
+		const body = { message, vs_ids, location, commune_id };
+		console.log("POST - body", body);
 
 		const response = await fetch(`https://urbai-api.vercel.app/api/agent`, {
 			method: "POST",
-			body: JSON.stringify({ message, vs_ids })
+			body: JSON.stringify(body)
 		})
 
 		const result = await response.json();

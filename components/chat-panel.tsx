@@ -31,7 +31,7 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
     const { user, updateUserSubscription } = useAuth();
     const { messages, fetchMessages, addMessage } = useMessageStore();
     const { projectLibraries, getProjectLibraries } = useLibraryStore();
-    const { activeLibraries } = useProjectStore();
+    const { project, activeLibraries } = useProjectStore();
     const { notes, addNote } = useNoteStore();
     const [message, setMessage] = useState("")
     const [isLoading, setIsLoading] = useState(false)
@@ -134,22 +134,29 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
 
         // Check if user has a PRC library and no address selected
         const prcLibrary = activeLibraries.find((lid) => projectLibraries.find((pl) => pl.library.id === lid)?.library.type_id === LIBRARY_TYPE_PRC);
-        if (prcLibrary && !addressData) {
-            toast.error("!Ups! No es posible realizar una consulta a un Plan Regulador Comunal (PRC) sin seleccionar una ubicación");
-            return
+        if (prcLibrary) {
+
+            if (!addressData) {
+                toast.error("!Ups! No es posible realizar una consulta a un Plan Regulador Comunal (PRC) sin seleccionar una ubicación");
+                return
+            }
+
+            if (!addressData.formatted_address.includes(project?.commune?.name || "")) {
+                toast.error("!Ups! La ubicación seleccionada no corresponde a la comuna de " + project?.commune?.name);
+                return
+            }
         }
-        
+
         const userMessage: ProjectMessage = {
             id: crypto.randomUUID(),
             project_id: project_id,
             role: "user",
             content: message,
-            location: addressData || null
+            location: addressData
         }
 
-        addMessage(userMessage);
+        await addMessage(userMessage);
         setMessage("");
-        setIsLoading(true);
 
         // Resetear la altura del textarea
         if (textareaRef.current) {
@@ -158,8 +165,17 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
 
         const projectLibrariesFiltered = projectLibraries.filter((pl) => activeLibraries.includes(pl.library.id));
         const vs_ids = projectLibrariesFiltered.map((pl) => pl.library.vector_store_id);
-        console.log('vs_ids', vs_ids);
-        const result = await getAnswer(message, project_id, vs_ids, user.subscription);
+        //console.log('vs_ids', vs_ids);
+        setIsLoading(true);
+        const result = await getAnswer({
+            project_id,
+            commune_id: String(project?.commune_id) || "",
+            message,
+            vs_ids,
+            subscription: user.subscription,
+            location: addressData
+        });
+
         if (!result.message) {
             console.error('Error getting answer:', result.error)
             setIsLoading(false)
@@ -167,10 +183,9 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
         }
 
         const { message: urbaiMessage } = result;
-        addMessage(urbaiMessage);
+        await addMessage(urbaiMessage);
         setIsLoading(false);
         setRefreshSubscription(true);
-        
     }
 
     const handleSaveNote = async (content: string) => {
@@ -230,6 +245,16 @@ export function ChatPanel({ isMobile = false, project_id }: ChatPanelProps) {
                                                                     {message.content}
                                                                 </p>
                                                             </div>
+                                                            {
+                                                                message.location && (
+                                                                    <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
+                                                                        <MapPin className="size-3 text-white" />
+                                                                        <p className="text-white text-xs leading-relaxed">
+                                                                            {message.location?.formatted_address}
+                                                                        </p>
+                                                                    </div>
+                                                                )
+                                                            }
                                                         </CardContent>
                                                     </Card>
                                                     <div className="flex justify-end mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">

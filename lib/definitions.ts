@@ -155,7 +155,7 @@ export interface ProjectMessage {
     content: string
     date?: string
     citations?: MessageCitation[] | null
-    location?: MessageLocation | null
+    location: MessageLocation | null
 }
 
 export interface MessageCitation {

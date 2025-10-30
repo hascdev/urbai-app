@@ -1,13 +1,22 @@
 'use server';
 
-import { ProjectMessage, Subscription } from "@/lib/definitions";
+import { MessageLocation, ProjectMessage, Subscription } from "@/lib/definitions";
 import { createClient } from "@/utils/supabase/server";
 
-export async function getAnswer(message: string, project_id: string, vs_ids: string[], subscription: Subscription) {
+type AnswerParams = {
+    project_id: string;
+    commune_id: string;
+    message: string;
+    vs_ids: string[];
+    subscription: Subscription;
+    location: MessageLocation | null;
+}
+
+export async function getAnswer({ project_id, commune_id, message, vs_ids, subscription, location }: AnswerParams) {
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/chat`, {
         method: "POST",
-        body: JSON.stringify({ message, vs_ids })
+        body: JSON.stringify({ message, vs_ids, location, commune_id })
     });
 
     const result = await response.json();
@@ -30,7 +39,8 @@ export async function getAnswer(message: string, project_id: string, vs_ids: str
         project_id: project_id,
         role: "assistant",
         content: result.answer,
-        citations: result.citations || null
+        citations: result.citations || null,
+        location: location || null
     }
 
     return { error: null, message: urbaiMessage };

@@ -5,7 +5,7 @@ import { createProjectMessage } from "@/lib/project-action"
 
 interface MessageStore {
     messages: ProjectMessage[]
-    addMessage: (message: ProjectMessage) => void
+    addMessage: (message: ProjectMessage) => Promise<void>
     fetchMessages: (project_id: string) => Promise<void>
 }
 
